@@ -1,0 +1,21 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
+
+@import "tailwindcss";
+
+* {
+    font-family: "Lato", sans-serif;
+}
+
+@theme {
+    --color-primary: #3A86FF;
+    --color-primary-hover: #2F70D9;
+
+    --color-secondary: #06D6A0;
+    --color-secondary-hover: #05C08F;
+
+    --color-danger: #FF6B35;
+    --color-danger-hover: #E55E2E;
+
+    --color-ashen: #6C757D;
+    --color-ashen-hover: #5A6268;
+}
