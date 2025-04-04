@@ -1,16 +1,11 @@
-import router from '@adonisjs/core/services/router'
-import { middleware } from '#start/kernel'
+
 
 const MenuItemsController = () => import('#controllers/User/menu_items_controller')
+export default function(router:any){
+    router.get('menus/:menuId/categories/:categoryId/menu-items',[MenuItemsController,'menuItems'])
+    router.get('menus/:menuId/categories/:categoryId/menu-items/:meinItemId',[MenuItemsController,'showMenuItem'])
+    router.post('menus/:menuId/categories/:categoryId/menu-items',[MenuItemsController,'storeMenuItem'])
+    router.delete('menus/:menuId/categories/:categoryId/menu-items/:meinItemId',[MenuItemsController,'deleteMenuItem'])
+    
+}
 
-router.delete('menu-items/menuId/:menuId/categoryId/:categoryId/menuItemId/:menuItemId',[MenuItemsController,'destroy'])
-.use(middleware.auth())
-
-router.put('menu-items/menuId/:menuId/categoryId/:categoryId/menuItemId/:menuItemId',[MenuItemsController,'update'])
-.use(middleware.auth())
-
-router.post('menu-items/menuId/:menuId/categoryId/:categoryId',[MenuItemsController,'store'])
-.use(middleware.auth())
-
-router.resource('menu-items',MenuItemsController).except(['destroy','update','store'])
-.use('*',middleware.auth())

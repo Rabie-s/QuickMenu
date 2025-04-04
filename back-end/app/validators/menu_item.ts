@@ -5,8 +5,7 @@ export const createMenuItemValidator = vine.compile(
         name: vine.string().trim(),
         price:vine.number(),
         description:vine.string().trim(),
-        image:vine.file(),
-        is_available:vine.boolean(),
+        image:vine.file().optional(),
     })
 )
 

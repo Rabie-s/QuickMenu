@@ -1,9 +1,8 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import { createMenuValidator, updateMenuValidator } from '#validators/menu'
-import { upload, deleteFile } from '../../helpers/helpers.js'
 export default class MenusController {
 
-  async index({ auth, response }: HttpContext) {
+  async userMenus({ auth, response }: HttpContext) {
     try {
       const authenticatedUser = auth.user
       const menu = await authenticatedUser?.related('menus').query()
@@ -14,27 +13,27 @@ export default class MenusController {
 
   }
 
-
-  async store({ auth, request, response }: HttpContext) {
-    const authenticatedUser = auth.user
-    const validatedData = await request.validateUsing(createMenuValidator)
-    const coverImage = request.file('cover_image')
-
-    const imageName = await upload(coverImage)
-    validatedData.cover_image = imageName
-
-    authenticatedUser?.related('menus').create(validatedData)
-    return response.created({ message: 'created successfully' })
+  async storeMenu({ auth, request, response }: HttpContext) {
+    try {
+      const authenticatedUser = auth.user
+      const validatedData = await request.validateUsing(createMenuValidator)
+      const menu = await authenticatedUser?.related('menus')
+      menu.create(validatedData)
+      return response.created({ message: 'Menu created successfully' })
+    } catch (error) {
+      return response.status(400).send({
+        message: 'Validation failed',
+        errors: error.messages,
+      })
+    }
 
   }
 
 
-  async show({ params, auth, response }: HttpContext) {
-    const authenticatedUser = auth.user
+  async showMenu({ params, auth, response }: HttpContext) {
     try {
-      const menu = await authenticatedUser?.related('menus').query()
-        .where('id', params.id)
-        .firstOrFail()
+      const authenticatedUser = auth.user
+      const menu = await authenticatedUser?.related('menus').query().where('id',params.menuId)
       return menu
     } catch (error) {
       return response.notFound({ message: 'Menu not found.' })
@@ -42,33 +41,11 @@ export default class MenusController {
 
   }
 
-
-  async update({ params, auth, request, response }: HttpContext) {
-    const authenticatedUser = auth.user
-    const validatedData = await request.validateUsing(updateMenuValidator)
-    const coverImage = request.file('cover_image')
-    const menu = await authenticatedUser?.related('menus').query().where('id', params.id)
-      .firstOrFail()
-    if (coverImage) {
-      deleteFile(menu.cover_image)
-      const imageName = await upload(coverImage)
-      validatedData.cover_image = imageName
-    }
-    menu.merge(validatedData)
-    await menu.save()
-    return response.ok({ message: 'Updated successfully' })
-  }
-
-
-  async destroy({ params, auth, response }: HttpContext) {
+  async deleteMenu({ params, auth, response }: HttpContext) {
 
     const authenticatedUser = auth.user
-
-    const menu = await authenticatedUser?.related('menus')
-      .query().where('id', params.id).firstOrFail()
-    await deleteFile(menu.cover_image)
-    await menu.delete()
-
+    const menu = await authenticatedUser?.related('menus').query().where('id',params.menuId).firstOrFail()
+    menu.delete();
     return response.ok({ message: 'Menu deleted successfully' })
 
   }

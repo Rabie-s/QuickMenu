@@ -1,14 +1,10 @@
-import router from '@adonisjs/core/services/router'
-import { middleware } from '#start/kernel'
-
 
 const CategoryController = () => import('#controllers/User/categories_controller')
 
-router.delete('categories/menuId/:menuId/categoryId/:categoryId',[CategoryController,'destroy'])
-.use(middleware.auth())
+export default function(router:any){
+    router.get('menus/:menuId/categories',[CategoryController,'menuCategories'])
+    router.get('menus/:menuId/categories/:categoryId',[CategoryController,'showMenuCategory'])
+    router.post('menus/:menuId/categories/',[CategoryController,'storeMenuCategory'])
+    router.delete('menus/:menuId/categories/:categoryId',[CategoryController,'deleteMenuCategory'])
+}
 
-router.put('categories/menuId/:menuId/categoryId/:categoryId',[CategoryController,'update'])
-.use(middleware.auth())
-
-router.resource('categories',CategoryController).except(['destroy','update'])
-.use('*',middleware.auth())
