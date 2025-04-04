@@ -1,17 +1,20 @@
 <template>
+  <NavBar/>
   <div class="flex justify-center items-center min-h-screen bg-gradient-to-r from-blue-50 to-purple-50">
 
     <FormsCard>
       <h1 class="mb-8 text-4xl font-bold text-center text-gray-800">Welcome Back</h1>
 
+      <ul class="bg-red-600 p-2 rounded-xl my-3" v-if="errors.length">
+        <li class="text-white text-sm font-bold" v-for="error in errors">{{ error.message }}</li>
+      </ul>
 
-      <FormsInput class="my-1" label="Email" placeholder="Enter your email" />
-
-
-      <FormsInput class="my-1" label="Password" placeholder="Enter your password" type="password" />
-
-
-      <FormsButton class="my-4" color="primary">Login</FormsButton>
+      <form @submit.prevent="handleFormSubmit">
+        <FormsInput v-model="formData.email" class="my-1" label="Email" placeholder="Enter your email" />
+        <FormsInput v-model="formData.password" class="my-1" label="Password" placeholder="Enter your password"
+          type="password" />
+        <FormsButton class="my-4" color="primary">Login</FormsButton>
+      </form>
 
       <div class="flex items-center my-6">
         <div class="flex-grow border-t border-gray-300"></div>
@@ -47,5 +50,23 @@
 </template>
 
 <script lang="ts" setup>
-// You can add any necessary logic or imports here
+
+const userAuthStore = useUserAuthStore()
+const errors = ref<string[]>([])
+const formData = ref({
+  email: '',
+  password: '',
+
+})
+
+async function handleFormSubmit() {
+  try{
+    const res = await userAuthStore.login(formData.value)
+    navigateTo('/user/menus')
+  }catch(error:any){
+    myToastify(error.data.errors[0].message,'error')
+  }
+
+
+}
 </script>

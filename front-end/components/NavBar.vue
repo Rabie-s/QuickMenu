@@ -27,7 +27,7 @@
       </div>
 
       <!-- Buttons -->
-      <div class="flex gap-2 m-5 lg:m-0">
+      <div v-if="userAuthStore.isAuth === false" class="flex gap-2 m-5 lg:m-0">
         <NuxtLink to="/user/auth/login">
           <FormsButton color="white">Login</FormsButton>
         </NuxtLink>
@@ -37,10 +37,34 @@
         </NuxtLink>
 
       </div>
+
+      <!-- Buttons -->
+      <div v-if="userAuthStore.isAuth === true" class="flex gap-2 m-5 lg:m-0">
+        
+          <FormsButton @click="logout" color="white">Logout</FormsButton>
+        
+
+      </div>
+
     </div>
   </nav>
 </template>
 
 <script lang="ts" setup>
+const userAuthStore = useUserAuthStore()
+
 const toggleNav = ref(false);
+
+async function logout() {
+  try {
+    await userAuthStore.logout()
+  //TODO fix toastfy message duration 
+    await myToastify('GoodBye!','success')
+    navigateTo('/')
+    
+  } catch (error) {
+    
+  }
+  
+}
 </script>
