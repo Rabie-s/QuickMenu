@@ -1,62 +1,91 @@
 <template>
-    <div v-if="status === 'pending'">
-        Loding...
-    </div>
-    <div v-else>
-        <ul v-for="user in data">
-            <li>{{ user.fullName }}</li>
-        </ul>
-    </div>
+  <div class="max-w-4xl mx-auto p-4">
+    <TabGroup>
+      <!-- التبويبات: الأقسام -->
+      <TabList class="flex space-x-2 mb-6 border-b border-gray-300 pb-2 overflow-auto">
+        <Tab
+          v-for="category in menu[0].categories"
+          :key="category.id"
+          as="button"
+          class="px-4 py-2 text-base font-semibold text-gray-700 rounded-t-md transition"
+        >
+          {{ category.name }}
+        </Tab>
+      </TabList>
 
-    <TransitionRoot
-    :show="isOpen"
-    as="template"
-    enter="duration-300 ease-out"
-    enter-from="opacity-0"
-    enter-to="opacity-100"
-    leave="duration-200 ease-in"
-    leave-from="opacity-100"
-    leave-to="opacity-0"
-  >
-    <Dialog @close="setIsOpen">
-      <DialogPanel>
-        <DialogTitle>Deactivate account</DialogTitle>
-        <!-- ... -->
-        <button @click="isOpen = false">Close</button>
-      </DialogPanel>
-    </Dialog>
-  </TransitionRoot>
+      <!-- المحتوى: الأصناف داخل كل قسم -->
+      <TabPanels>
+        <TabPanel
+          v-for="category in menu[0].categories"
+          :key="category.id"
+          class="grid grid-cols-1 sm:grid-cols-2 gap-4"
+        >
+          <div
+            v-if="category.menuItems.length"
+            v-for="item in category.menuItems"
+            :key="item.id"
+            class="border border-gray-200 rounded-lg p-4 shadow-sm bg-white"
+          >
+            <h3 class="text-lg font-bold text-gray-800">{{ item.name }}</h3>
+            <p class="text-sm text-gray-600">{{ item.description || 'بدون وصف' }}</p>
+            <div class="mt-2 text-right font-semibold text-green-600">
+              {{ item.price }} د.أ
+            </div>
+          </div>
 
-  <button @click="isOpen=true">open</button>
-
-
+          <div v-else class="text-gray-500 col-span-full text-center py-4">
+            لا توجد أصناف في هذا القسم حالياً.
+          </div>
+        </TabPanel>
+      </TabPanels>
+    </TabGroup>
+  </div>
 </template>
-<script setup lang="ts">
-  import {
-    Dialog,
-    DialogPanel,
-    DialogTitle,
-    DialogDescription,
-    TransitionRoot
-  } from '@headlessui/vue'
-  const isOpen = ref(false)
-  const completeButtonRef = ref(null)
 
-function setIsOpen(value:boolean) {
-  isOpen.value = value
-}
+<script setup>
+import { TabGroup, TabList, Tab, TabPanels, TabPanel } from '@headlessui/vue'
 
-function completeOrder() {
-    console.log('yes')
-  }
-
-
-
-const errors = ref<string[]>([])
-//const data = ref<string[]>([])
-    const config = useRuntimeConfig();
-    const { status, data } = await useLazyFetch(`${config.public.apiBase}/test`);
-
-
-
+// البيانات القادمة من الباك إند (تقدر تجيبها من API مستقبلاً)
+const menu = [
+  {
+    id: 40,
+    name: "AL-REEM",
+    categories: [
+      {
+        id: 16,
+        name: "Sandwich ",
+        menuItems: [
+          {
+            id: 14,
+            name: "Shawrma-reguler",
+            price: "1.50",
+            description: "none",
+          },
+          {
+            id: 15,
+            name: "Shawrma-super",
+            price: "2.00",
+            description: null,
+          },
+          {
+            id: 20,
+            name: "Zinger meel",
+            price: "3.00",
+            description: "asa",
+          },
+        ],
+      },
+      {
+        id: 17,
+        name: "Snaks",
+        menuItems: [],
+      },
+      {
+        id: 19,
+        name: "dddfsa",
+        menuItems: [],
+      },
+    ],
+  },
+]
 </script>

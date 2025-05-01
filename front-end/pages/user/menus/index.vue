@@ -25,11 +25,11 @@
               sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
 
       <div v-if="status==='pending'">
-        Lofing...
+        Loding...
       </div>
 
       <div v-else class="w-full" v-for="menu in menus">
-        <MenuCard :name="menu.name" :link="`/user/menus/${menu.id}/categories/`" />
+        <MenuCard :name="menu.name" :link="`/user/menus/${menu.id}/categories/`" @destroy="destroy(menu.id)" />
       </div>
 
     </div>
@@ -65,6 +65,14 @@ async function handleFormSubmit() {
     errors.value.push(...error?.data.errors)
   }
 
+}
+
+async function destroy(id) {
+  const res = await Fetch(`user/v1/menus/${id}`, {
+      method: 'DELETE',
+})
+myToastify('Menu deleted successfuly', 'success')
+await refresh()
 }
 
 </script>
