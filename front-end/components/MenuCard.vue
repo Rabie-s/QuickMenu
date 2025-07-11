@@ -1,7 +1,7 @@
 <template>
     <div v-bind="$attrs">
-        
-            <div class="flex items-center justify-center rounded-xl bg-cover bg-center text-white text-3xl font-extrabold shadow-lg
+
+        <div class="flex items-center justify-center rounded-xl bg-cover bg-center text-white text-3xl font-extrabold shadow-lg
             h-48 w-full relative overflow-hidden cursor-pointer
             transition ease-in-out hover:-translate-y-1
             hover:scale-110 bg-[url('~/assets/images/res1.jpeg')]">
@@ -15,8 +15,8 @@
                 <i class="fa-solid fa-trash text-lg hover:text-red-600"></i>
             </div>
 
-            </div>
-        
+        </div>
+
     </div>
 
 

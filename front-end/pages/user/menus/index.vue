@@ -24,7 +24,7 @@
     <div class="grid justify-items-center gap-7 p-10 
               sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
 
-      <div v-if="status==='pending'">
+      <div v-if="status === 'pending'">
         Loding...
       </div>
 
@@ -69,10 +69,10 @@ async function handleFormSubmit() {
 
 async function destroy(id) {
   const res = await Fetch(`user/v1/menus/${id}`, {
-      method: 'DELETE',
-})
-myToastify('Menu deleted successfuly', 'success')
-await refresh()
+    method: 'DELETE',
+  })
+  myToastify('Menu deleted successfuly', 'success')
+  await refresh()
 }
 
 </script>

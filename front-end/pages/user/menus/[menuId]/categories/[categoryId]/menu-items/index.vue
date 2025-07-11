@@ -10,7 +10,8 @@
             <FormsInput v-model="formData.name" label="Title" />
             <FormsInput v-model="formData.price" label="Price" />
             <FormsInput v-model="formData.description" label="description" />
-            <FormsInput v-model="formData.image" label="Image" />
+            <input type="file" ref="imageInput" @change="onInputFileChange" id="">
+            <!-- <FormsInput v-model="formData.image" label="Image" /> -->
             <FormsButton class="mt-2" color="secondary">Save</FormsButton>
           </form>
         </div>
@@ -25,6 +26,7 @@
             <th class="px-6 py-3 border border-gray-200">Name</th>
             <th class="px-6 py-3 border border-gray-200">Price</th>
             <th class="px-6 py-3 border border-gray-200">Is available</th>
+            <th class="px-6 py-3 border border-gray-200">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -33,6 +35,9 @@
             <td class="px-6 py-4 border border-gray-200 text-center">{{ menuItem.price }}</td>
             <td class="px-6 py-4 border border-gray-200 text-center text-green-600">{{ menuItem.isAvailable ? 'True'
               : 'False' }}</td>
+              <td class="px-6 py-4 border border-gray-200 text-center text-green-600">
+                <button class="text-red-600 cursor-pointer" @click="destroy(menuItem.id)">Delete</button>
+              </td>
           </tr>
         </tbody>
       </table>
@@ -51,25 +56,28 @@ const formData = ref({
   name: '',
   price: '',
   description: '',
-  image: ''
+  image: null
 
 })
+
+function onInputFileChange(event){
+formData.value.image = event.target.files[0]
+}
 
 const { data: menuItems, status, refresh } = await useApiFetch(`user/v1/menus/${menuId}/categories/${categoryId}/menu-items`,
   { method: 'GET', lazy: true })
 
 
 async function handleFormSubmit() {
-  //http://localhost:3333/user/v1/menus/40/categories/16/menu-items
+  const payload = new FormData()
+  payload.append('name',formData.value.name);
+  payload.append('price',formData.value.price);
+  payload.append('description',formData.value.description);
+  payload.append('image',formData.value.image);
   try {
     await Fetch(`user/v1/menus/${menuId}/categories/${categoryId}/menu-items`, {
       method: 'POST',
-      body: {
-        name: formData.value.name,
-        price: formData.value.price,
-        description: formData.value.description,
-        image: formData.value.image
-      }
+      body: payload
     })
 
     myToastify('Menu item created successfuly', 'success')
@@ -79,6 +87,14 @@ async function handleFormSubmit() {
     console.log(error.value)
   }
 
+}
+
+async function destroy(id) {
+  const res = await Fetch(`user/v1/menus/${menuId}/categories/${categoryId}/menu-items/${id}`, {
+    method: 'DELETE',
+  })
+  myToastify('Menu deleted successfuly', 'success')
+  await refresh()
 }
 
 </script>
