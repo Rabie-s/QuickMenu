@@ -17,8 +17,6 @@ const props = defineProps({
 })
 
 const cardClasses = computed(() => {
-  const baseClasses = 'bg-white rounded-2xl shadow-xl transform transition-all duration-300 hover:scale-[1.02] border border-gray-100'
-  
   const sizeClasses = {
     sm: 'p-6 max-w-sm',
     md: 'p-8 max-w-md',
@@ -27,15 +25,14 @@ const cardClasses = computed(() => {
   }
   
   const variantClasses = {
-    default: '',
-    glass: 'glass border-white/20',
+    default: 'bg-white',
+    glass: 'glass border-white/20 bg-white/80',
     gradient: 'bg-gradient-to-br from-white to-gray-50'
   }
   
   return [
-    baseClasses,
     sizeClasses[props.size] || sizeClasses.md,
-    variantClasses[props.variant] || ''
+    variantClasses[props.variant] || variantClasses.default
   ].join(' ')
 })
 </script>

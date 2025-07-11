@@ -11,7 +11,7 @@
         <div class="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-4">
           <div class="flex items-center justify-between">
             <DialogTitle class="text-xl font-bold text-white">
-              {{ props.title }}
+              {{ title }}
             </DialogTitle>
             <button 
               @click="$emit('close', false)"

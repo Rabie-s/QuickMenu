@@ -65,12 +65,10 @@
       </div>
     </div>
 
-
-    <div class="grid justify-items-center gap-7 p-10 
-              sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
-
-      <div v-if="status==='pending'">
-        Loding...
+    <!-- Empty State -->
+    <div v-else-if="!menus || menus.length === 0" class="text-center py-20">
+      <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+        <i class="fas fa-utensils text-gray-400 text-3xl"></i>
       </div>
       <h3 class="text-xl font-semibold text-gray-900 mb-2">No menus yet</h3>
       <p class="text-gray-600 mb-6 max-w-md mx-auto">
@@ -163,17 +161,37 @@ async function handleFormSubmit() {
     open.value = false
     await refresh()
   } catch (error: any) {
-    errors.value.push(...error?.data.errors)
+    if (error?.data?.errors) {
+      errors.value = error.data.errors
+    } else {
+      await myToastify('Failed to create menu. Please try again.', 'error')
+    }
+  } finally {
+    isCreating.value = false
   }
-
 }
 
-async function destroy(id) {
-  const res = await Fetch(`user/v1/menus/${id}`, {
+function confirmDelete(menu) {
+  menuToDelete.value = menu
+}
+
+async function deleteMenu() {
+  if (isDeleting.value || !menuToDelete.value) return
+  
+  try {
+    isDeleting.value = true
+    
+    await Fetch(`user/v1/menus/${menuToDelete.value.id}`, {
       method: 'DELETE',
-})
-myToastify('Menu deleted successfuly', 'success')
-await refresh()
+    })
+    
+    await myToastify('Menu deleted successfully', 'success')
+    menuToDelete.value = null
+    await refresh()
+  } catch (error) {
+    await myToastify('Failed to delete menu. Please try again.', 'error')
+  } finally {
+    isDeleting.value = false
+  }
 }
-
 </script>
